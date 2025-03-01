@@ -1,4 +1,3 @@
 # goenv
 
-Mapping env variables into tagged struct
-
+Mapping env variables into tagged structq
