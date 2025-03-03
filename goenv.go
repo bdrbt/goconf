@@ -1,4 +1,4 @@
-package goenv
+package goconf
 
 import (
 	"fmt"
@@ -7,7 +7,7 @@ import (
 	"strconv"
 )
 
-func LoadEnv(target interface{}) error {
+func LoadEnv(target any) error {
 	// Check if target is a non-nil pointer
 	if target == nil {
 		return fmt.Errorf("target cannot be nil")
@@ -57,6 +57,7 @@ func loadStructConfig(v reflect.Value) error {
 			if err != nil {
 				return fmt.Errorf("failed to parse %s as int: %v", envVar, err)
 			}
+
 			fieldValue.SetInt(int64(intValue))
 
 		case reflect.Bool:
@@ -64,6 +65,7 @@ func loadStructConfig(v reflect.Value) error {
 			if err != nil {
 				return fmt.Errorf("failed to parse %s as bool: %v", envVar, err)
 			}
+
 			fieldValue.SetBool(boolValue)
 
 		case reflect.Struct:

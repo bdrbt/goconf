@@ -1,5 +1,8 @@
-help: ## you reading this now
+help: ## Show this help.
+	echo "help"
 
-lint: ## init 
-    golangci-lint run ./...
+lint: ## init
+	golangci-lint run ./...
 
+test: ## tests
+	go test ./...

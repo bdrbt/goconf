@@ -1,8 +1,9 @@
-package goenv
+package goconf_test
 
 import (
-	"os"
 	"testing"
+
+	"github.com/bdrbt/goconf"
 )
 
 func TestLoadEnv(t *testing.T) {
@@ -12,13 +13,13 @@ func TestLoadEnv(t *testing.T) {
 		Boolean bool   `env:"BOOLEAN_VALUE"`
 	}
 
-	os.Setenv("SIMPLE_STRING", "simple")
-	os.Setenv("INT_VALUE", "42")
-	os.Setenv("BOOLEAN_VALUE", "true")
+	var tc TestConf
 
-	tc := TestConf{}
+	t.Setenv("SIMPLE_STRING", "simple")
+	t.Setenv("INT_VALUE", "42")
+	t.Setenv("BOOLEAN_VALUE", "true")
 
-	if err := LoadEnv(&tc); err != nil {
+	if err := goconf.LoadEnv(&tc); err != nil {
 		t.Error("Error while loading environment: ", err)
 	}
 
