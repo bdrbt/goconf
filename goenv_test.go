@@ -8,10 +8,11 @@ import (
 
 func TestLoadEnv(t *testing.T) {
 	type TestConf struct {
-		String        string `env:"SIMPLE_STRING"`
-		Integer       int    `env:"INT_VALUE"`
-		Boolean       bool   `env:"BOOLEAN_VALUE"`
-		DefaultString string `env:"DEFAULT_STRING" default:"default string"`
+		String         string `env:"SIMPLE_STRING"`
+		Integer        int    `env:"INT_VALUE"`
+		Boolean        bool   `env:"BOOLEAN_VALUE"`
+		DefaultString  string `env:"DEFAULT_STRING" default:"default string"`
+		UnqottedString string `env:"QUOTTED_STRING"`
 	}
 
 	var tc TestConf
@@ -19,6 +20,7 @@ func TestLoadEnv(t *testing.T) {
 	t.Setenv("SIMPLE_STRING", "simple")
 	t.Setenv("INT_VALUE", "42")
 	t.Setenv("BOOLEAN_VALUE", "true")
+	t.Setenv("QUOTTED_STRING", "\"noquotes\"")
 
 	if err := goconf.LoadEnv(&tc); err != nil {
 		t.Error("Error while loading environment: ", err)
@@ -38,5 +40,9 @@ func TestLoadEnv(t *testing.T) {
 
 	if tc.DefaultString != "default string" {
 		t.Errorf("Fafault string not set to declared default value")
+	}
+
+	if tc.UnqottedString != "noquotes" {
+		t.Errorf("Quotes not removed, want: noquotes got:%s", tc.UnqottedString)
 	}
 }

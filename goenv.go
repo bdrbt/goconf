@@ -38,7 +38,7 @@ func loadStructConfig(v reflect.Value) error {
 		}
 
 		// Get the environment variable value
-		val := os.Getenv(envVar)
+		val := getSanitizedEnv(envVar)
 
 		// If environment variable is not set, try to use default value
 		if val == "" {
@@ -103,4 +103,24 @@ func loadStructConfig(v reflect.Value) error {
 	}
 
 	return nil
+}
+
+// getSanitizedEnv - returns env variable value
+// without suurouding quotes,double quotes and apostrophs.
+func getSanitizedEnv(envVar string) string {
+	val := os.Getenv(envVar)
+	if len(val) > 1 {
+		if val[0] == val[len(val)-1] {
+			if val[0] == '\'' || val[0] == '"' || val[0] == '`' {
+				if len(val) == 2 {
+					// in case if value is "" or '' return empty string
+					return ""
+				}
+
+				return val[1 : len(val)-1]
+			}
+		}
+	}
+
+	return val
 }
