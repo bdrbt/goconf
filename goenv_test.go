@@ -8,9 +8,10 @@ import (
 
 func TestLoadEnv(t *testing.T) {
 	type TestConf struct {
-		String  string `env:"SIMPLE_STRING"`
-		Integer int    `env:"INT_VALUE"`
-		Boolean bool   `env:"BOOLEAN_VALUE"`
+		String        string `env:"SIMPLE_STRING"`
+		Integer       int    `env:"INT_VALUE"`
+		Boolean       bool   `env:"BOOLEAN_VALUE"`
+		DefaultString string `env:"DEFAULT_STRING" default:"default string"`
 	}
 
 	var tc TestConf
@@ -33,5 +34,9 @@ func TestLoadEnv(t *testing.T) {
 
 	if tc.Boolean != true {
 		t.Errorf("Boolean vaue is not set, want: %t got:%t", true, tc.Boolean)
+	}
+
+	if tc.DefaultString != "default string" {
+		t.Errorf("Fafault string not set to declared default value")
 	}
 }

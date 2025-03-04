@@ -27,17 +27,26 @@ func loadStructConfig(v reflect.Value) error {
 	}
 
 	t := v.Type()
-	for i := 0; i < t.NumField(); i++ {
+	for i := range t.NumField() {
 		field := t.Field(i)
-		envVar := field.Tag.Get("env")
 
-		if envVar == "" {
+		envVar := field.Tag.Get("env")
+		defVal := field.Tag.Get("default")
+
+		if envVar == "" && defVal == "" {
 			continue
 		}
 
 		// Get the environment variable value
-		envValue := os.Getenv(envVar)
-		if envValue == "" {
+		val := os.Getenv(envVar)
+
+		// If environment variable is not set, try to use default value
+		if val == "" {
+			val = defVal
+		}
+
+		// If default not set raise error
+		if val == "" {
 			return fmt.Errorf("environment variable %s is not set", envVar)
 		}
 
@@ -50,10 +59,10 @@ func loadStructConfig(v reflect.Value) error {
 		switch fieldValue.Kind() {
 
 		case reflect.String:
-			fieldValue.SetString(envValue)
+			fieldValue.SetString(val)
 
 		case reflect.Int:
-			intValue, err := strconv.Atoi(envValue)
+			intValue, err := strconv.Atoi(val)
 			if err != nil {
 				return fmt.Errorf("failed to parse %s as int: %v", envVar, err)
 			}
@@ -61,7 +70,7 @@ func loadStructConfig(v reflect.Value) error {
 			fieldValue.SetInt(int64(intValue))
 
 		case reflect.Bool:
-			boolValue, err := strconv.ParseBool(envValue)
+			boolValue, err := strconv.ParseBool(val)
 			if err != nil {
 				return fmt.Errorf("failed to parse %s as bool: %v", envVar, err)
 			}
